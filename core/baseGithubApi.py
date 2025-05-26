@@ -64,7 +64,7 @@ class BaseGithubIssues(ABC):
             Uma lista de strings, cada string representando uma label de exclusão
         """
         return []
-    
+
     def get_special_filters(self):
         """
         Retorna uma lista de funções de filtro especiais.
@@ -161,7 +161,7 @@ class BaseGithubIssues(ABC):
             filtered = [i for i in filtered if not any(
                 label["name"] in excluded for label in i["labels"]["nodes"]
             )]
-        
+
         for special_filter in self.get_special_filters():
             filtered = list(filter(special_filter, filtered))
             
@@ -183,38 +183,44 @@ class BaseGithubIssues(ABC):
         :return: The GraphQL query as a string
         :rtype: str
         """
+        labels_filter = ""
+        bug_labels = self.get_bug_labels()
+        if bug_labels:
+            labels_filter = f"labels: {bug_labels},"
+        
         return f"""
         {{
-          repository(owner: "{self.get_repository_owner()}", name: "{self.get_repository_name()}") {{
+        repository(owner: "{self.get_repository_owner()}", name: "{self.get_repository_name()}") {{
             issues(
-              first: 100,
-              labels: {self.get_bug_labels()},
-              states: [OPEN, CLOSED],
-              orderBy: {{field: CREATED_AT, direction: DESC}}
-              {f', after: "{end_cursor}"' if end_cursor else ""}
+            first: 100,
+            {labels_filter}
+            states: [OPEN, CLOSED],
+            orderBy: {{field: CREATED_AT, direction: DESC}}
+            {f', after: "{end_cursor}"' if end_cursor else ""}
             ) {{
-              nodes {{
+            nodes {{
                 title
                 number
                 url
                 createdAt
                 labels(first: 20) {{
-                  nodes {{
+                nodes {{
                     name
-                  }}
+                }}
                 }}
                 author {{
-                  login
+                login
                 }}
-              }}
-              pageInfo {{
+            }}
+            pageInfo {{
                 endCursor
                 hasNextPage
-              }}
             }}
-          }}
+            }}
+        }}
         }}
         """
+
     
     def _make_graphql_request(self, query):
         """

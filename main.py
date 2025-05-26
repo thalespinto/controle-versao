@@ -2,6 +2,7 @@ from core.factory import GithubRepoFactory
 import csv
 from datetime import datetime
 import os
+import argparse
 
 def export_to_csv(issues, repo_name):
     """
@@ -18,8 +19,12 @@ def export_to_csv(issues, repo_name):
     """
     os.makedirs("mine_results", exist_ok=True)
     filename = os.path.join("mine_results",f"{repo_name}_issues_{datetime.now().strftime('%Y-%m')}.csv")
+    fieldnames = ['number', 'createdAt']
+    if repo_name == "mui":
+        fieldnames.append('is_duplicate')
+    
     with open(filename, mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.DictWriter(file, fieldnames=['number', 'createdAt'])
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(issues)
 
@@ -39,9 +44,9 @@ def main(repo_name):
         print(e)
 
 if __name__ == "__main__":
-    main("mediamtx")
-    #main("mui")
-    # main("rn")
-    # main("react")
-    # main("vscode")
-    # main("docusaurus")
+    parser = argparse.ArgumentParser(description="Mineração de issues de repositórios do GitHub")
+    parser.add_argument("repo_name", type=str, help="Nome do repositório a ser minerado")
+    args = parser.parse_args()
+
+    print(f"Iniciando mineração do repositório: {args.repo_name}")
+    main(args.repo_name)

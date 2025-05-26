@@ -1,8 +1,11 @@
 import requests
+import os
+from dotenv import load_dotenv
+load_dotenv()  
 
+token = os.getenv("GITHUB_TOKEN")
 
 class GithubApi:
-    token = "seu token aqui"
     url = "https://api.github.com/graphql"
 
     headers = {

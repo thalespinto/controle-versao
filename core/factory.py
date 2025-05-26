@@ -4,6 +4,8 @@ from repositories_to_mine.mui import MuiIssues
 from repositories_to_mine.react import ReactIssues
 from repositories_to_mine.rn import ReactNativeIssues 
 from repositories_to_mine.vscode import VSCodeIssues
+from repositories_to_mine.flutter import FlutterIssues
+
 
 class GithubRepoFactory:
     @staticmethod
@@ -15,6 +17,7 @@ class GithubRepoFactory:
             "react":ReactIssues ,
             "rn":ReactNativeIssues ,
             "vscode":VSCodeIssues ,
+            "flutter":FlutterIssues
         }
         
         repo_class = repos.get(repo_name.lower())

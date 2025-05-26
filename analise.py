@@ -1,9 +1,12 @@
 import pandas as pd
-
+import os
 
 def main():
     # Carrega o CSV
-    df = pd.read_csv("docusaurus_issues_2025-05.csv")
+    folder = "mine_results"
+    filename = "mediamtx_issues_2025-05.csv"
+    file_path = os.path.join(folder, filename)
+    df = pd.read_csv(file_path)
 
     # Converte a coluna 'createdAt' para datetime
     df['createdAt'] = pd.to_datetime(df['createdAt'])

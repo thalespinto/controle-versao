@@ -11,10 +11,17 @@ class FlutterIssues(BaseGithubIssues):
         return []  
     
     def get_excluded_labels(self):
-        return ["waiting for customer response", "working as intended"]
-    
+        return [
+            "in triage",
+            "assigned for triage",
+            "needs repro info",
+            "will need additional triage",
+            "waiting for customer response",
+            "r:duplicate",
+            "r:timeout"
+        ]
     def get_special_filters(self):
-        bug_labels = ["type: bug", "c: crash", "c: fatal crash", "regression", "performance"]
+        bug_labels = ["type: bug", "c: crash", "c: fatal crash", "c: regression", "c: performance"]
 
         def has_bug_label(issue):
             labels = [label["name"].lower() for label in issue["labels"]["nodes"]]

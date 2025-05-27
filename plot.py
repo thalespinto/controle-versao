@@ -5,94 +5,133 @@ import glob
 from matplotlib.ticker import MaxNLocator  # Para melhor controle dos ticks do eixo X
 
 
-def plotar_contagem_consolidada_anual():
+def plotar_analises_consolidadas():  # Renomeada para refletir que plota mais de uma análise
     """
-    Lê todos os arquivos CSV de contagem anual de issues,
-    plota todos em um único gráfico de linhas e salva como uma imagem PNG.
+    Gera dois gráficos consolidados:
+    1. Evolução anual de issues por repositório.
+    2. Média anual de issues por período (Antes_2023, Depois_2023) por repositório.
+    Os gráficos são salvos como imagens PNG.
     """
     pasta_entrada = "mine_results"
     pasta_saida_plots = os.path.join(pasta_entrada, "plots_contagem_anual")
 
-    # Criar a pasta de saída para os gráficos, se não existir
     os.makedirs(pasta_saida_plots, exist_ok=True)
 
-    # Padrão para encontrar os arquivos CSV de contagem anual
-    padrao_arquivos_csv = os.path.join(pasta_entrada, '*_contagem_anual.csv')
-    arquivos_csv_contagem = glob.glob(padrao_arquivos_csv)
+    # --- GRÁFICO 1: Evolução Anual de Issues por Repositório ---
+    print("--- Gerando Gráfico 1: Evolução Anual de Issues ---")
+    padrao_arquivos_contagem_anual = os.path.join(pasta_entrada, '*_contagem_anual.csv')
+    arquivos_csv_contagem_anual = glob.glob(padrao_arquivos_contagem_anual)
 
-    if not arquivos_csv_contagem:
-        print(f"Nenhum arquivo CSV de contagem anual ('*_contagem_anual.csv') encontrado em '{pasta_entrada}'.")
-        print("Certifique-se de que o script 'analise.py' foi executado e gerou esses arquivos.")
-        return
+    if not arquivos_csv_contagem_anual:
+        print(f"  Nenhum arquivo CSV de contagem anual ('*_contagem_anual.csv') encontrado em '{pasta_entrada}'.")
+    else:
+        print(f"  📊 Encontrados {len(arquivos_csv_contagem_anual)} arquivos para o gráfico de evolução anual.")
+        plt.figure(figsize=(15, 8))
+        cores_anual = plt.cm.get_cmap('tab10', len(arquivos_csv_contagem_anual))
 
-    print(f"📊 Encontrados {len(arquivos_csv_contagem)} arquivos de contagem anual para plotar no gráfico consolidado.")
+        for i, csv_file_path in enumerate(arquivos_csv_contagem_anual):
+            try:
+                base_name = os.path.basename(csv_file_path)
+                # print(f"    -> Processando {base_name} para evolução anual...")
+                df_contagem = pd.read_csv(csv_file_path)
 
-    plt.figure(figsize=(15, 8))  # Figura única para todos os plots
+                if 'ano' not in df_contagem.columns or 'numero_de_issues' not in df_contagem.columns:
+                    print(
+                        f"      Aviso: Colunas 'ano' ou 'numero_de_issues' não encontradas em '{base_name}'. Pulando.")
+                    continue
+                if df_contagem.empty:
+                    print(f"      Aviso: DataFrame vazio para '{base_name}'. Pulando.")
+                    continue
 
-    cores = plt.cm.get_cmap('tab10', len(arquivos_csv_contagem))  # Define um mapa de cores
+                df_contagem = df_contagem.sort_values(by='ano')
+                nome_legenda = base_name.split('_')[0]
+                plt.plot(df_contagem['ano'], df_contagem['numero_de_issues'],
+                         marker='o', linestyle='-', label=nome_legenda, color=cores_anual(i))
+            except Exception as e:
+                print(f"      ❌ Erro ao processar '{base_name}' para evolução anual: {e}")
 
-    for i, csv_file_path in enumerate(arquivos_csv_contagem):
+        plt.title('Evolução Anual de Issues por Repositório', fontsize=18)
+        plt.xlabel('Ano', fontsize=14)
+        plt.ylabel('Número de Issues', fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.7)
+        ax = plt.gca()
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+
+        if arquivos_csv_contagem_anual:
+            plt.legend(title="Repositório", bbox_to_anchor=(1.05, 1), loc='upper left')
+
+        plt.xticks(rotation=45)
+        plt.tight_layout(rect=[0, 0, 0.85, 1])
+
+        plot_filename_anual = 'consolidado_evolucao_anual_issues.png'
+        plot_output_path_anual = os.path.join(pasta_saida_plots, plot_filename_anual)
         try:
-            base_name = os.path.basename(csv_file_path)
-            print(f"  -> Processando arquivo para gráfico consolidado: {base_name}")
-
-            df_contagem = pd.read_csv(csv_file_path)
-
-            if 'ano' not in df_contagem.columns or 'numero_de_issues' not in df_contagem.columns:
-                print(f"    Aviso: Colunas 'ano' ou 'numero_de_issues' não encontradas em '{base_name}'. Pulando.")
-                continue
-
-            if df_contagem.empty:
-                print(f"    Aviso: DataFrame vazio para '{base_name}'. Pulando.")
-                continue
-
-            # Ordenar por ano para garantir que o gráfico de linha seja correto
-            df_contagem = df_contagem.sort_values(by='ano')
-
-            # Extrair nome para a legenda (primeira parte do nome do arquivo antes do '_')
-            # Ex: 'mediamtx_issues_2025-05_contagem_anual.csv' -> 'mediamtx'
-            # Ex: 'react_issues_contagem_anual.csv' -> 'react'
-            nome_legenda = base_name.split('_')[0]
-
-            plt.plot(df_contagem['ano'], df_contagem['numero_de_issues'],
-                     marker='o', linestyle='-', label=nome_legenda, color=cores(i))
-
+            plt.savefig(plot_output_path_anual)
+            print(f"  ✅ Gráfico de evolução anual salvo como: {plot_output_path_anual}\n")
         except Exception as e:
-            print(f"    ❌ Erro ao processar o arquivo '{base_name}' para o gráfico consolidado: {e}")
+            print(f"  ❌ Erro ao salvar o gráfico de evolução anual: {e}\n")
+        plt.close()
 
-    # Configurações do gráfico consolidado
-    plt.title('Evolução Anual de Issues por Repositório', fontsize=18)
-    plt.xlabel('Ano', fontsize=14)
-    plt.ylabel('Número de Issues', fontsize=14)
+    # --- GRÁFICO 2: Média Anual de Issues por Período por Repositório ---
+    print("--- Gerando Gráfico 2: Média Anual de Issues por Período ---")
+    padrao_arquivos_analise_periodo = os.path.join(pasta_entrada, '*_analise_periodo.csv')
+    arquivos_csv_analise_periodo = glob.glob(padrao_arquivos_analise_periodo)
 
-    plt.grid(True, linestyle='--', alpha=0.7)
+    if not arquivos_csv_analise_periodo:
+        print(f"  Nenhum arquivo CSV de análise por período ('*_analise_periodo.csv') encontrado em '{pasta_entrada}'.")
+        print("  Certifique-se de que o script 'analise.py' foi executado e gerou esses arquivos.")
+    else:
+        print(f"  📊 Encontrados {len(arquivos_csv_analise_periodo)} arquivos para o gráfico de média por período.")
+        plt.figure(figsize=(12, 7))  # Tamanho pode ser ajustado
+        cores_periodo = plt.cm.get_cmap('Dark2', len(arquivos_csv_analise_periodo))  # Outro mapa de cores
 
-    # Assegurar que os ticks do eixo X sejam inteiros (anos)
-    ax = plt.gca()
-    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        for i, csv_file_path in enumerate(arquivos_csv_analise_periodo):
+            try:
+                base_name = os.path.basename(csv_file_path)
+                # print(f"    -> Processando {base_name} para média por período...")
+                df_periodo = pd.read_csv(csv_file_path)
 
-    # Adicionar legenda
-    if arquivos_csv_contagem:  # Só adiciona legenda se houver algo para plotar
-        plt.legend(title="Repositório", bbox_to_anchor=(1.05, 1), loc='upper left')  # Coloca a legenda fora do gráfico
+                if 'periodo' not in df_periodo.columns or 'media_anual_issues_periodo' not in df_periodo.columns:
+                    print(
+                        f"      Aviso: Colunas 'periodo' ou 'media_anual_issues_periodo' não encontradas em '{base_name}'. Pulando.")
+                    continue
+                if df_periodo.empty:
+                    print(f"      Aviso: DataFrame vazio para '{base_name}'. Pulando.")
+                    continue
 
-    plt.xticks(rotation=45)
-    plt.tight_layout(
-        rect=[0, 0, 0.85, 1])  # Ajusta o layout para não cortar os labels e dar espaço para legenda externa
+                # Garantir a ordem dos períodos se necessário (ex: Antes_2023, Depois_2023)
+                # Se 'periodo' já estiver ordenado no CSV ou for apenas esses dois, pode não ser crucial
+                # df_periodo['periodo'] = pd.Categorical(df_periodo['periodo'], categories=['Antes_2023', 'Depois_2023'], ordered=True)
+                # df_periodo = df_periodo.sort_values('periodo')
 
-    # Definir nome do arquivo de saída para o gráfico consolidado
-    plot_filename = 'consolidado_evolucao_anual_issues.png'
-    plot_output_path = os.path.join(pasta_saida_plots, plot_filename)
+                nome_legenda = base_name.split('_')[0]
+                plt.plot(df_periodo['periodo'], df_periodo['media_anual_issues_periodo'],
+                         marker='s', linestyle='--', label=nome_legenda, color=cores_periodo(i), linewidth=2)
+            except Exception as e:
+                print(f"      ❌ Erro ao processar '{base_name}' para média por período: {e}")
 
-    try:
-        plt.savefig(plot_output_path)
-        print(f"\n✅ Gráfico consolidado salvo como: {plot_output_path}")
-    except Exception as e:
-        print(f"\n❌ Erro ao salvar o gráfico consolidado: {e}")
+        plt.title('Média Anual de Issues por Período e Repositório', fontsize=18)
+        plt.xlabel('Período', fontsize=14)
+        plt.ylabel('Média Anual de Issues', fontsize=14)
+        plt.grid(True, axis='y', linestyle=':', alpha=0.7)  # Grid apenas no eixo Y para clareza com categorias
 
-    plt.close()  # Fecha a figura para liberar memória
+        if arquivos_csv_analise_periodo:
+            plt.legend(title="Repositório", bbox_to_anchor=(1.05, 1), loc='upper left')
 
-    print(f"\n🏁 Processamento de gráfico consolidado concluído. O gráfico foi salvo em: '{pasta_saida_plots}'")
+        plt.tight_layout(rect=[0, 0, 0.85, 1])
+
+        plot_filename_periodo = 'consolidado_media_anual_por_periodo.png'
+        plot_output_path_periodo = os.path.join(pasta_saida_plots, plot_filename_periodo)
+        try:
+            plt.savefig(plot_output_path_periodo)
+            print(f"  ✅ Gráfico de média por período salvo como: {plot_output_path_periodo}\n")
+        except Exception as e:
+            print(f"  ❌ Erro ao salvar o gráfico de média por período: {e}\n")
+        plt.close()
+
+    print(f"🏁 Processamento de gráficos concluído. Os gráficos foram salvos em: '{pasta_saida_plots}'")
 
 
 if __name__ == "__main__":
-    plotar_contagem_consolidada_anual()
+    # Renomear a chamada da função se você renomeou a função
+    plotar_analises_consolidadas()

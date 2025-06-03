@@ -12,4 +12,4 @@ class RoslynIssues(BaseGithubIssues):
         return '["Bug"]'
 
     def get_excluded_labels(self):
-        return []
+        return ["untriaged"]

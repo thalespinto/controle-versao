@@ -6,7 +6,7 @@ class QbittorrentIssues(BaseGithubIssues):
         return "qbittorrent"
 
     def get_repository_name(self):
-        return "qbittorent"
+        return "qbittorrent"
 
     def get_bug_labels(self):
         return '["Confirmed bug"]'

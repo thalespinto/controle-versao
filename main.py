@@ -18,7 +18,7 @@ def export_to_csv(issues, repo_name):
     :type repo_name: str
     """
     os.makedirs("mine_results", exist_ok=True)
-    filename = os.path.join("mine_results",f"{repo_name}_issues_{datetime.now().strftime('%Y-%m')}.csv")
+    filename = os.path.join("mine_results", f"{repo_name}_issues_{datetime.now().strftime('%Y-%m')}.csv")
     fieldnames = ['number', 'createdAt']
     if repo_name == "mui":
         fieldnames.append('is_duplicate')

@@ -2,7 +2,7 @@ import pandas as pd
 def main():
     # Substitua 'seu_arquivo.xlsx' pelo nome do seu arquivo Excel.
     # Se o arquivo não estiver no mesmo diretório do script, forneça o caminho completo.
-    file_path = "projets_with_1000_stars_or_more.xlsx" # <<< COLOQUE O NOME CORRETO DO SEU ARQUIVO .XLSX AQUI
+    file_path = "projets_with_1000_stars_or_more.xlsx"  # <<< COLOQUE O NOME CORRETO DO SEU ARQUIVO .XLSX AQUI
     sheet_name = 0 # <<< NOME DA PLANILHA DENTRO DO ARQUIVO EXCEL. Ajuste se necessário (pode ser 0 para a primeira planilha).
 
     # Nomes das colunas esperados (ajuste se os nomes no seu arquivo Excel forem diferentes)

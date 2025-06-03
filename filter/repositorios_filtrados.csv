@@ -27,7 +27,6 @@ pytorch,pytorch,2016-08-13 05:26:41,2024-06-30 14:45:53,False,946926,Python,24,3
 neovim,neovim,2014-01-31 13:39:22,2024-06-30 13:48:19,False,275980,Vim Script,17,1297,981,79572,5482,11422,30035,17684,9,45,37,Vim-fork focused on extensibility and usability
 bitcoin,bitcoin,2010-12-19 15:16:43,2024-06-30 14:47:19,False,262278,C++,16,953,3992,77024,35582,8024,41437,20905,5,312,50,Bitcoin Core integration/staging tree
 opencv,opencv,2012-07-19 09:40:17,2024-06-30 11:32:56,False,535710,C++,19,1597,2659,76728,55656,10604,34329,15065,6,125,63,Open Source Computer Vision Library
-yt-dlp,yt-dlp,2020-10-26 04:22:55,2024-06-30 12:10:42,False,47463,Python,5,1308,469,75605,5955,7226,22569,2858,3,86,82,A feature-rich command-line audio/video downloader
 spring-projects,spring-boot,2012-10-19 15:02:57,2024-06-30 11:17:42,False,174304,Java,13,1100,3360,73538,40308,34504,49394,6287,20,316,277,Spring Boot
 home-assistant,core,2013-09-17 07:29:48,2024-06-30 14:46:08,False,634124,Python,6,3762,1337,69674,28834,49862,79547,70220,232,1290,1000,:house_with_garden: Open source home automation that puts local control and privacy first.
 netdata,netdata,2013-06-17 18:39:10,2024-06-30 00:18:45,False,202020,C,16,584,1362,69374,5792,7853,18125,9731,29,102,87,The open-source observability platform everyone needs!
@@ -89,7 +88,6 @@ xitu,gold-miner,2015-11-04 03:29:13,2024-04-17 09:44:37,False,80499,,0,562,1271,
 rapid7,metasploit-framework,2011-08-30 06:13:20,2024-06-29 05:30:12,False,1010690,Ruby,24,2175,2043,33222,13788,5986,74280,12886,16,900,0,Metasploit Framework
 jgm,pandoc,2010-03-20 20:34:23,2024-06-30 10:18:49,False,64986,Haskell,15,508,514,33133,3297,7488,17538,2024,71,226,136,Universal markup converter
 netty,netty,2010-11-09 09:22:21,2024-06-28 03:13:13,False,90030,Java,9,668,1746,33039,15803,6393,11498,7546,19,282,0,Netty project - an event-driven asynchronous network application framework
-appsmithorg,appsmith,2020-06-30 04:07:36,2024-06-30 09:29:02,False,680431,TypeScript,13,328,285,32278,3498,19876,17854,14560,1407,265,229,"Platform to build admin panels, internal tools, and dashboards. Integrates with 25+ databases and any API."
 ziglang,zig,2015-08-06 00:51:28,2024-06-30 11:06:17,False,277564,Zig,11,885,357,31934,2333,10794,29604,9581,26,19,18,"General-purpose programming language and toolchain for maintaining robust, optimal, and reusable software."
 ray-project,ray,2016-10-25 19:38:30,2024-06-30 13:41:20,False,405899,Python,15,983,474,31899,5435,17900,22019,28148,786,95,87,Ray is a unified framework for scaling AI and Python applications. Ray consists of a core distributed runtime and a set of AI Libraries for accelerating ML workloads.
 ccxt,ccxt,2017-05-14 15:41:56,2024-06-30 13:39:14,False,3212968,Python,13,670,929,31864,7361,9966,83336,12848,20,826,33,A JavaScript / TypeScript / Python / C# / PHP cryptocurrency trading API with support for more than 100 bitcoin/altcoin exchanges
@@ -98,7 +96,6 @@ jellyfin,jellyfin,2018-12-09 06:36:45,2024-06-30 11:56:16,False,63265,C#,4,1099,
 sqlmapproject,sqlmap,2012-06-26 09:52:15,2024-06-28 22:29:06,False,83533,Python,9,126,1093,31214,5598,5188,10191,394,4,112,9,Automatic SQL injection and database takeover tool
 certbot,certbot,2014-11-12 02:52:20,2024-06-21 18:34:22,False,51933,Python,11,485,750,31096,3378,5290,10947,4623,846,136,52,Certbot is EFF's tool to obtain certs from Let's Encrypt and (optionally) auto-enable HTTPS on your server.  It can also act as a client for any other CA that uses the ACME protocol.
 expo,expo,2016-08-15 17:14:25,2024-06-30 13:14:55,False,3024183,TypeScript,14,1310,290,30811,4867,13924,22495,15125,533,0,0,"An open-source framework for making universal native apps with React. Expo runs on Android, iOS, and the web."
-logseq,logseq,2020-05-23 00:06:06,2024-06-30 09:46:51,False,122389,Clojure,12,275,210,30742,1786,7541,12731,3277,83,187,147,"A privacy-first, open-source platform for knowledge management and collaboration. Download link:  http://github.com/logseq/logseq/releases. roadmap: http://trello.com/b/8txSM12G/roadmap"
 DIYgod,RSSHub,2018-04-02 14:43:21,2024-06-30 02:01:57,False,336810,TypeScript,5,1027,338,30700,6861,5324,12032,10490,14,0,0,🧡 Everything is RSSible
 hashicorp,vault,2015-02-25 00:15:59,2024-06-28 22:45:17,False,285161,Go,12,2176,819,29994,4119,6052,19909,21428,2611,385,144,"A tool for secrets management, encryption as a service, and privileged access management"
 SeleniumHQ,selenium,2013-01-14 21:40:56,2024-06-29 19:34:34,False,2192373,Java,20,749,1289,29731,8017,10212,31880,3848,75,225,95,A browser automation framework and ecosystem.
@@ -115,7 +112,6 @@ composer,composer,2011-06-08 08:53:00,2024-06-24 22:42:04,False,27120,PHP,1,986,
 influxdata,influxdb,2013-09-26 14:31:10,2024-06-28 22:50:52,False,195735,Rust,6,615,736,28164,3506,13310,49264,11400,105,443,82,"Scalable datastore for metrics, events, and real-time analytics"
 milvus-io,milvus,2019-09-16 06:43:43,2024-06-30 12:26:07,False,190597,Go,12,242,271,28032,2703,11117,20167,21081,122,85,80,"A cloud-native vector database, storage for next generation AI applications"
 hashicorp,consul,2013-11-04 22:15:27,2024-06-30 01:32:38,False,479983,Go,11,1792,921,28020,4395,5406,21380,15768,1654,400,174,"Consul is a distributed, highly available, and data center aware solution to connect and configure applications across dynamic, distributed infrastructure."
-pola-rs,polars,2020-05-13 19:45:33,2024-06-30 13:16:42,False,139029,Rust,4,423,158,27536,1685,7872,10199,9363,42,465,163,"Dataframes powered by a multithreaded, vectorized query engine, written in Rust"
 Lightning-AI,pytorch-lightning,2019-03-31 00:45:57,2024-06-30 14:15:38,False,131517,Python,8,930,246,27414,3292,6985,10350,10171,103,209,157,"Pretrain, finetune and deploy AI models on multiple GPUs, TPUs with zero code changes."
 numpy,numpy,2010-09-13 23:02:39,2024-06-30 14:17:56,False,144051,Python,14,1628,595,26992,9597,12537,36282,14227,29,240,113,The fundamental package for scientific computing with Python.
 backstage,backstage,2020-01-24 22:39:49,2024-06-30 05:29:38,False,7468135,TypeScript,13,1525,218,26987,5618,5717,55637,18529,459,493,344,Backstage is an open framework for building developer portals
@@ -153,7 +149,6 @@ containers,podman,2017-11-01 15:01:27,2024-06-30 08:21:58,False,141611,Go,12,660
 microsoft,vcpkg,2016-09-15 16:40:50,2024-06-30 08:42:49,False,73860,CMake,10,2017,433,22121,6153,17764,22569,20172,1,53,50,"C++ Library Manager for Windows, Linux, and MacOS"
 facebook,flow,2014-10-28 17:17:45,2024-06-30 02:17:21,False,135091,OCaml,11,862,392,22090,1851,6661,17900,2386,222,355,352,Adds static typing to JavaScript to improve developer productivity and code quality.
 jitsi,jitsi-meet,2013-12-16 12:51:09,2024-06-28 19:13:34,False,270662,TypeScript,13,479,508,22032,6571,6227,12362,8591,351,16049,63,"Jitsi Meet - Secure, Simple and Scalable Video Conferences that you use as a standalone app or embed in your web application."
-dotnet,maui,2020-05-08 18:11:05,2024-06-30 12:48:40,False,243710,C#,10,2824,652,21818,1660,12516,14851,8076,720,459,76,".NET MAUI is the .NET Multi-platform App UI, a framework for building native device applications spanning mobile, tablet, and desktop."
 PaddlePaddle,Paddle,2016-08-15 06:59:08,2024-06-30 14:34:56,False,441872,C++,12,938,718,21776,5467,18107,49211,47250,58,79,63,PArallel Distributed Deep LEarning: Machine Learning Framework from Industrial Practice （『飞桨』核心框架，深度学习&机器学习高性能单机、分布式训练和跨平台部署）
 forem,forem,2016-11-13 23:02:13,2024-06-25 10:34:29,False,1665342,Ruby,10,703,360,21729,3966,5633,13430,14422,35,10,0,For empowering community 🌱
 arendst,Tasmota,2017-01-28 13:37:08,2024-06-30 13:38:42,False,233369,C,18,351,625,21688,4713,9517,19515,6574,8,109,107,"Alternative firmware for ESP8266 and ESP32 based devices with easy configuration using webUI, OTA updates, automation using timers or rules, expandability and entirely local control over MQTT, HTTP, Serial or KNX. Full documentation at"
@@ -185,7 +180,6 @@ microsoft,fluentui,2016-06-06 15:03:44,2024-06-28 22:58:48,False,654290,TypeScri
 python,mypy,2012-12-07 13:30:23,2024-06-30 02:04:35,False,66434,Python,10,685,238,17842,2740,10310,11902,7042,70,90,0,Optional static typing for Python
 frappe,erpnext,2011-06-08 08:20:56,2024-06-30 10:28:55,False,1184781,Python,5,541,611,17502,6686,15244,49246,25585,133,1384,1000,Free and Open Source Enterprise Resource Planning (ERP)
 kivy,kivy,2010-11-03 20:27:32,2024-06-27 11:54:47,False,76115,Python,13,500,601,17179,3036,5038,12941,3679,90,50,12,"Open source UI framework written in Python, running on Windows, Linux, macOS, Android and iOS"
-siyuan-note,siyuan,2020-08-30 09:21:35,2024-06-30 03:11:39,False,266896,TypeScript,12,48,112,17017,1271,11523,13967,298,2,625,624,"A privacy-first, self-hosted, fully open source personal knowledge management software, written in typescript and golang."
 gravitational,teleport,2015-03-02 19:36:00,2024-06-30 00:42:46,False,751676,Go,19,339,239,16940,1701,9742,18643,32672,2955,3813,639,"The easiest, and most secure way to access and protect all of your infrastructure."
 vectordotdev,vector,2018-08-27 16:57:34,2024-06-30 07:56:44,False,113849,Rust,16,445,149,16920,1453,7429,11541,12027,781,94,79,A high-performance observability data pipeline.
 swagger-api,swagger-codegen,2011-07-06 14:26:48,2024-06-26 00:25:56,False,105375,Mustache,18,1062,414,16718,6016,6496,11725,5587,19,123,117,"swagger-codegen contains a template-driven engine to generate documentation, API clients and server stubs in different languages by parsing your OpenAPI / Swagger definition."
@@ -207,7 +201,6 @@ ampproject,amphtml,2015-09-01 22:10:53,2024-06-29 08:01:52,False,960568,JavaScri
 ruffle-rs,ruffle,2019-04-25 17:53:32,2024-06-30 12:17:06,False,142683,Rust,11,171,156,14822,767,10472,12379,6012,4,1135,1000,A Flash Player emulator written in Rust
 lichess-org,lila,2012-02-21 19:46:55,2024-06-30 14:08:45,False,508647,Scala,10,421,226,14803,2199,9109,60921,6240,608,5,2,"♞ lichess.org: the forever free, adless and open source chess server ♞"
 firefly-iii,firefly-iii,2014-06-28 07:37:32,2024-06-24 03:07:39,False,298380,PHP,10,153,155,14754,1350,5724,19370,1563,3,408,355,Firefly III: a personal finances manager
-airbytehq,airbyte,2020-07-27 23:55:54,2024-06-30 14:31:36,False,540397,Python,14,927,179,14712,3778,13831,17273,22750,3643,482,384,"The leading data integration platform for ETL / ELT data pipelines from APIs, databases & files to data warehouses, data lakes & data lakehouses. Both self-hosted and Cloud-hosted."
 RPCS3,rpcs3,2012-11-03 15:16:18,2024-06-30 14:10:29,False,119302,C++,9,293,598,14655,1860,7690,16657,7527,5,64,34,PS3 emulator/debugger
 ppy,osu,2014-07-31 04:26:30,2024-06-30 11:32:34,False,172531,C#,5,445,295,14641,2160,10042,67721,12239,3,635,524,rhythm is just a *click* away!
 tinymce,tinymce,2010-01-11 14:46:42,2024-06-29 10:19:24,False,89206,TypeScript,6,225,268,14616,2212,6389,26179,3087,129,2018,0,"The world's #1 JavaScript library for rich text editing. Available for React, Vue and Angular"
@@ -301,7 +294,6 @@ woocommerce,woocommerce,2011-08-09 15:12:11,2024-06-30 00:04:10,False,738147,PHP
 sqlalchemy,sqlalchemy,2018-11-27 03:35:03,2024-06-28 16:34:42,False,86575,Python,2,621,99,9113,1367,7803,17031,805,17,310,167,The Database Toolkit for Python
 nopSolutions,nopCommerce,2014-04-09 05:47:50,2024-06-28 08:45:24,False,1272798,C#,8,174,624,9062,5185,6243,14822,987,14,60,58,ASP.NET Core eCommerce software. nopCommerce is a free and open-source shopping cart.
 darktable-org,darktable,2012-03-21 21:53:04,2024-06-30 13:13:21,False,1271802,C,20,483,173,9052,1106,7150,41441,9919,45,134,74,darktable is an open source photography workflow application and raw developer
-mdn,content,2020-09-15 15:42:29,2024-06-30 11:31:25,False,348770,Markdown,4,4373,259,8954,22439,7921,22797,24788,17,0,0,The content behind MDN Web Docs
 keybase,client,2015-01-11 17:17:12,2024-06-20 19:49:04,False,683501,Go,24,97,297,8824,1217,7373,37082,18915,1986,184,103,"Keybase Go Library, Client, Service, OS X, iOS, Android, Electron"
 ckeditor,ckeditor5,2015-01-08 12:13:59,2024-06-28 14:54:31,False,555495,JavaScript,6,141,148,8685,3619,13187,57326,3394,338,110,102,"Powerful rich text editor framework with a modular architecture, modern integrations, and features like collaborative editing."
 cakephp,cakephp,2010-05-08 14:38:22,2024-06-29 04:32:54,False,108832,PHP,7,607,543,8675,3440,6571,46996,11061,10,502,418,CakePHP: The Rapid Development Framework for PHP - Official Repository
@@ -328,7 +320,6 @@ carbon-design-system,carbon,2017-03-13 14:23:59,2024-06-30 14:03:41,False,457048
 microsoft,azuredatastudio,2017-11-02 01:00:13,2024-06-24 22:28:12,False,754792,TypeScript,15,295,273,7499,883,12365,10347,13059,552,159,136,"Azure Data Studio is a data management and development tool with connectivity to popular cloud and on-premises databases. Azure Data Studio supports Windows, macOS, and Linux, with immediate capability to connect to Azure SQL and SQL Server. Browse the extension library for more database support options including MySQL, PostgreSQL, and MongoDB."
 prusa3d,PrusaSlicer,2016-03-01 14:26:57,2024-06-27 13:10:16,False,345743,C++,18,215,272,7492,1894,11997,25128,872,229,303,159,"G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)"
 IntelRealSense,librealsense,2015-11-17 20:42:18,2024-06-30 13:04:02,False,264043,C++,12,298,293,7426,4799,9242,17463,3746,13,157,76,Intel® RealSense™ SDK
-datafuselabs,databend,2020-10-10 06:04:42,2024-06-30 07:58:07,False,269204,Rust,7,186,97,7408,713,5223,31449,10405,6,1419,1000,"𝗗𝗮𝘁𝗮, 𝗔𝗻𝗮𝗹𝘆𝘁𝗶𝗰𝘀 & 𝗔𝗜. Modern alternative to Snowflake. Cost-effective and simple for massive-scale analytics. https://databend.com"
 opencart,opencart,2011-08-02 07:32:17,2024-06-30 13:39:37,False,180024,PHP,9,370,590,7322,4795,6667,16794,7190,4,41,29,A free shopping cart system. OpenCart is an open source PHP-based online e-commerce solution.
 spesmilo,electrum,2012-08-02 16:24:30,2024-06-30 09:13:31,False,60220,Python,8,344,371,7222,3022,6622,17608,2269,37,173,0,Electrum Bitcoin Wallet
 Graylog2,graylog2-server,2010-05-17 21:27:02,2024-06-29 00:09:38,False,178437,Java,11,173,239,7210,1052,7216,24933,12464,387,394,0,Free and open log management
@@ -406,7 +397,6 @@ craftcms,cms,2017-01-27 21:52:45,2024-06-30 12:26:59,False,629175,PHP,11,224,93,
 pantsbuild,pants,2012-12-17 17:39:04,2024-06-30 12:23:25,False,161981,Python,13,339,67,3180,612,5778,13989,15153,93,1136,506,The Pants Build System
 RobotLocomotion,drake,2014-01-26 16:11:05,2024-06-30 13:49:59,False,560187,C++,11,288,175,3162,1239,6159,32478,15480,7,71,65,Model-based design and verification for robotics.
 camunda,camunda,2016-03-20 03:38:04,2024-06-30 11:29:00,False,343183,Java,10,148,109,3099,564,7032,40248,12821,352,557,282,Process Orchestration Framework
-Expensify,App,2020-08-07 19:08:07,2024-06-30 11:12:31,False,1396924,TypeScript,12,657,77,3094,2597,23794,115144,20819,959,3237,414,"Welcome to New Expensify: a complete re-imagination of financial collaboration, centered around chat. Help us build the next generation of Expensify by sharing feedback and contributing to the code."
 iterate-ch,cyberduck,2017-01-20 14:16:34,2024-06-28 17:07:27,False,635686,Java,15,39,59,3083,279,11803,41782,2471,45,305,0,"Cyberduck is a libre FTP, SFTP, WebDAV, Amazon S3, Backblaze B2, Microsoft Azure & OneDrive and OpenStack Swift file transfer client for Mac and Windows."
 opnsense,core,2014-12-13 15:43:50,2024-06-30 10:46:00,False,87324,PHP,14,255,129,3073,701,5603,16932,1690,31,343,0,"OPNsense GUI, API and systems backend"
 wordpress-mobile,WordPress-Android,2013-04-08 20:52:40,2024-06-28 10:25:04,False,634494,Kotlin,8,205,209,2929,1307,8697,84511,12244,603,1077,683,WordPress for Android

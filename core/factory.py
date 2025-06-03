@@ -13,7 +13,6 @@ from repositories_to_mine.react import ReactIssues
 from repositories_to_mine.rn import ReactNativeIssues
 from repositories_to_mine.roslyn import RoslynIssues
 from repositories_to_mine.vscode import VSCodeIssues
-from repositories_to_mine.flutter import FlutterIssues
 
 
 class GithubRepoFactory:
@@ -25,7 +24,6 @@ class GithubRepoFactory:
             "react":ReactIssues ,
             "rn":ReactNativeIssues ,
             "vscode":VSCodeIssues ,
-            "flutter":FlutterIssues,
             'bokeh': BokehIssues,
             'clickhouse': ClickhouseIssues,
             'gradle': GradleIssues,

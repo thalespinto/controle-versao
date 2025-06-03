@@ -37,7 +37,7 @@ def main():
 
             if df is not None and not df.empty:
                 # 2. Filtrar repositórios criados antes de novembro de 2020
-                filter_date = pd.to_datetime('2020-11-01')
+                filter_date = pd.to_datetime('2020-05-01')
                 condition_date = pd.to_datetime(df[date_column], errors='coerce', dayfirst=True) < filter_date
 
                 # 3. Filtrar repositórios com mais de 10000 commits

@@ -40,7 +40,7 @@ def main():
                 filter_date = pd.to_datetime('2020-11-01')
                 condition_date = pd.to_datetime(df[date_column], errors='coerce', dayfirst=True) < filter_date
 
-                # 3. Filtrar repositórios com mais de 1000 commits
+                # 3. Filtrar repositórios com mais de 10000 commits
                 df[commits_column] = pd.to_numeric(df[commits_column], errors='coerce')
                 condition_commits = df[commits_column] > 10000
 
@@ -50,7 +50,7 @@ def main():
 
                 # 5. Filtrar repositório com mais de 5000 issues
                 df[issues_column] = pd.to_numeric(df[issues_column], errors='coerce')
-                condition_issues = df[issues_column] > 10
+                condition_issues = df[issues_column] > 5000
 
                 # Combinar todas as condições
                 filtered_df = df[condition_date & condition_commits & condition_contributors & condition_issues]

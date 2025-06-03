@@ -44,9 +44,28 @@ def main(repo_name):
         print(e)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Mineração de issues de repositórios do GitHub")
-    parser.add_argument("repo_name", type=str, help="Nome do repositório a ser minerado")
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser(description="Mineração de issues de repositórios do GitHub")
+    # parser.add_argument("repo_name", type=str, help="Nome do repositório a ser minerado")
+    # args = parser.parse_args()
 
-    print(f"Iniciando mineração do repositório: {args.repo_name}")
-    main(args.repo_name)
+    repos = [
+        "docusaurus",
+        "mui",
+        "react",
+        "rn",
+        "vscode",
+        "flutter",
+        'bokeh',
+        'clickhouse',
+        'gradle',
+        'kera',
+        'logstash',
+        'metabase',
+        'nextcloud_server',
+        'openwrt',
+        'qbittorrent',
+        'roslyn',
+    ]
+    for repo in repos:
+        print(f"Iniciando mineração do repositório: {repo}")
+        main(repo)

@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # args = parser.parse_args()
 
     repos = [
-        "videodev_hls"
+        "videodev_hls",
         "mitmproxy",
         "free_cad",
         "aws_cli",

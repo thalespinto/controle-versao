@@ -1,181 +1,136 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import os
 import glob
 
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from scipy.stats import ttest_ind
+import os
 
-class IssueAnalyzer:
+
+class AnalisadorDeIssues:
     """
-    A class to analyze issue data from CSV files, plotting monthly issue counts
-    and marking a specific release date.
+    Uma classe para analisar a diferença no número de issues criadas
+    entre dois períodos de tempo e visualizar os resultados.
     """
 
-    def __init__(self, chatgpt_release_date="2022-11-30"):
+    def __init__(self, caminho_csv: str):
         """
-        Initializes the IssueAnalyzer.
+        Inicializa o analisador carregando os dados do arquivo CSV.
 
         Args:
-            chatgpt_release_date (str): The release date of ChatGPT in 'YYYY-MM-DD' format.
+            caminho_csv (str): O caminho para o arquivo CSV com os dados das issues.
         """
-        # Make chatgpt_release_date timezone-aware (UTC)
-        self.chatgpt_release_date = pd.to_datetime(chatgpt_release_date).tz_localize('UTC')
-        self.date_ranges = [
-            ("2020-05-01", "2022-05-31"),  # May 2020 to May 2022
-            ("2023-06-01", "2025-06-30")  # June 2023 to June 2025
-        ]
 
-    def _load_and_prepare_data(self, file_path):
-        """
-        Loads data from a CSV file and prepares it for analysis.
-
-        Args:
-            file_path (str): The path to the CSV file.
-
-        Returns:
-            pandas.DataFrame: DataFrame with 'createdAt' as datetime index (UTC), or None if error.
-        """
+        self.periodo_1 = ("2020-05-01", "2022-05-31")
+        self.periodo_2 = ("2023-06-01", "2025-06-30")
         try:
-            df = pd.read_csv(file_path)
-            if 'createdAt' not in df.columns:
-                print(f"Error: 'createdAt' column not found in {file_path}")
-                return None
+            self.df = pd.read_csv(caminho_csv)
+            self.df['createdAt'] = pd.to_datetime(self.df['createdAt'])
+            print("Arquivo CSV carregado com sucesso!")
+        except FileNotFoundError:
+            print(f"Erro: O arquivo {caminho_csv} não foi encontrado.")
+            self.df = None
+        except KeyError:
+            print(
+                "Erro: A coluna 'createdAt' não foi encontrada no CSV. Por favor, verifique o nome da coluna no arquivo.")
+            self.df = None
 
-            df['createdAt'] = pd.to_datetime(df['createdAt'])
-
-            df = df.set_index('createdAt')
-            return df
-        except Exception as e:
-            print(f"Error loading or processing file {file_path}: {e}")
-            return None
-
-    def _filter_and_aggregate_issues(self, df):
+    def _get_contagens_mensais(self, data_inicio: str, data_fim: str) -> pd.Series:
         """
-        Filters data for specified date ranges and aggregates issue counts monthly.
-
-        Args:
-            df (pandas.DataFrame): DataFrame with 'createdAt' as datetime index (UTC).
-
-        Returns:
-            pandas.DataFrame: DataFrame with monthly issue counts (UTC index), or None.
+        Filtra o DataFrame por um período e retorna a contagem mensal de issues.
         """
-        if df is None:
-            return None
+        mask = (self.df['createdAt'] >= data_inicio) & (self.df['createdAt'] <= data_fim)
+        df_periodo = self.df.loc[mask]
+        df_periodo = df_periodo.set_index('createdAt')
 
-        all_filtered_data = []
-        for start_date_str, end_date_str in self.date_ranges:
-            # Convert string dates to timezone-aware (UTC) datetime objects
-            start_dt_utc = pd.to_datetime(start_date_str).tz_localize('UTC')
-            end_dt_utc = pd.to_datetime(end_date_str).tz_localize('UTC').normalize() + pd.Timedelta(
-                days=1) - pd.Timedelta(nanoseconds=1)
+        if df_periodo.empty:
+            return pd.Series([], dtype=int)
 
-            mask = (df.index >= start_dt_utc) & (df.index <= end_dt_utc)
-            filtered_df = df[mask]
-            all_filtered_data.append(filtered_df)
+        contagens_mensais = df_periodo.groupby(df_periodo.index.to_period('M')).size()
+        return contagens_mensais
 
-        if not all_filtered_data:
-            print("No data found in the specified date ranges.")
-            return None
-
-        combined_df = pd.concat(all_filtered_data)
-        if combined_df.empty:
-            print("No data found in the specified date ranges after combining.")
-            return None
-
-        monthly_issues = combined_df.resample('ME').size().rename('issue_count')
-
-        return monthly_issues
-
-    def _generate_plot(self, monthly_issues, output_plot_path):
+    def analisar_e_visualizar(self, nome_arquivo_saida):
         """
-        Generates and saves a line plot of monthly issue counts.
-
-        Args:
-            monthly_issues (pandas.Series): Series with monthly issue counts (UTC index).
-            output_plot_path (str): Path to save the generated plot.
+        Executa a análise completa, realiza o teste t e salva um boxplot.
         """
-        if monthly_issues is None or monthly_issues.empty:
-            print(f"No data to plot for {output_plot_path}.")
-            return
+        with open(f"{nome_arquivo_saida}_logs.txt", 'w', encoding='utf-8') as f:
+            if self.df is None:
+                print("A análise não pode continuar porque o DataFrame não foi carregado.", file=f)
+                return
 
-        plt.figure(figsize=(15, 7))
+            contagens_p1 = self._get_contagens_mensais(self.periodo_1[0], self.periodo_1[1])
+            contagens_p2 = self._get_contagens_mensais(self.periodo_2[0], self.periodo_2[1])
 
-        plt.plot(monthly_issues.index, monthly_issues.values, marker='o', linestyle='-', label='Monthly Issues')
+            print("\n--- Resumo das Contagens Mensais ---", file=f)
+            print(f"Período 1 ({self.periodo_1[0]} a {self.periodo_1[1]}):", file=f)
+            if not contagens_p1.empty:
+                print(contagens_p1.describe().to_string(), file=f)
+            else:
+                print("Nenhum dado encontrado para este período.", file=f)
 
-        # Add a vertical line for ChatGPT release date (also UTC)
-        plt.axvline(x=self.chatgpt_release_date, color='r', linestyle='--',
-                    label=f'ChatGPT Release ({self.chatgpt_release_date.strftime("%Y-%m-%d")})')
+            print(f"\nPeríodo 2 ({self.periodo_2[0]} a {self.periodo_2[1]}):", file=f)
+            if not contagens_p2.empty:
+                print(contagens_p2.describe().to_string(), file=f)
+            else:
+                print("Nenhum dado encontrado para este período.", file=f)
 
-        plt.title(
-            f'Monthly Issue Counts\n(Data from: {os.path.basename(output_plot_path).replace("_issue_trend_plot.png", ".csv")})')
-        plt.xlabel('Month')
-        plt.ylabel('Number of Issues')
+            if len(contagens_p1) < 2 or len(contagens_p2) < 2:
+                print("\n--- Teste de Significância Estatística ---", file=f)
+                print("Não é possível realizar o teste t: um ou ambos os períodos têm menos de duas amostras mensais.", file=f)
+            else:
+                t_stat, p_value = ttest_ind(contagens_p1, contagens_p2, equal_var=False)
+                print("\n--- Teste de Significância Estatística ---", file=f)
+                print(f"Estatística t: {t_stat:.4f}", file=f)
+                print(f"P-valor: {p_value:.4f}", file=f)
+                alpha = 0.05
+                if p_value < alpha:
+                    print(f"Conclusão: Existe uma diferença estatisticamente significativa.", file=f)
+                else:
+                    print(f"Conclusão: Não há evidências de uma diferença estatisticamente significativa.", file=f)
 
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-        plt.gca().xaxis.set_major_locator(mdates.MonthLocator(bymonthday=1, interval=3))
-        plt.xticks(rotation=45, ha='right')  # ha='right' for better alignment
+        plt.figure(figsize=(12, 8))
+        sns.set_theme(style="whitegrid")
 
-        plt.legend()
-        plt.grid(True)
-        plt.tight_layout()
+        # --- CORREÇÃO PRINCIPAL AQUI ---
+        # 1. Criar DataFrames individuais para cada período com um rótulo
+        df1 = pd.DataFrame({'contagem': contagens_p1, 'periodo': f'Período 1\n({self.periodo_1[0]} a {self.periodo_1[1]})'})
+        df2 = pd.DataFrame({'contagem': contagens_p2, 'periodo': f'Período 2\n({self.periodo_2[0]} a {self.periodo_2[1]})'})
 
-        try:
-            plt.savefig(output_plot_path)
-            print(f"📈 Plot saved to {output_plot_path}")
-        except Exception as e:
-            print(f"Error saving plot {output_plot_path}: {e}")
-        plt.close()
+        # 2. Concatenar em um único DataFrame (formato "longo")
+        df_plot = pd.concat([df1, df2])
 
-    def process_csv(self, file_path, output_dir="output_plots"):
-        """
-        Processes a single CSV file: loads data, filters, aggregates, and generates a plot.
+        # 3. Usar o DataFrame longo para plotar.
+        #    'x' define as categorias no eixo x.
+        #    'y' define os valores no eixo y.
+        if not df_plot.empty:
+            sns.boxplot(data=df_plot, x='periodo', y='contagem', palette="pastel", width=0.5)
 
-        Args:
-            file_path (str): The path to the CSV file.
-            output_dir (str): Directory to save the generated plot.
-        """
-        print(f"\n📄 Processing {file_path}...")
+            plt.title('Comparação Mensal de Issues Criadas', fontsize=16)
+            plt.ylabel('Número de Issues por Mês', fontsize=12)
+            plt.xlabel('Períodos', fontsize=12)
+            plt.tight_layout()
 
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-            print(f"Created output directory: {output_dir}")
+            try:
+                plt.savefig(f"{nome_arquivo_saida}_boxplot.png")
+                print(f"\nGráfico salvo com sucesso como '{nome_arquivo_saida}_boxplot.png'")
+            except Exception as e:
+                print(f"\nOcorreu um erro ao salvar o gráfico: {e}")
+        else:
+            print("\nNenhum dado para plotar.")
 
-        df = self._load_and_prepare_data(file_path)
-        if df is None:
-            return
+    def define_boxplot_path(self, name):
+        nome_do_arquivo = os.path.basename(name)
+        nome_base, extensao = os.path.splitext(nome_do_arquivo)
+        return nome_base
 
-        monthly_issues = self._filter_and_aggregate_issues(df)
-        if monthly_issues is None or monthly_issues.empty:
-            print(f"No aggregated monthly data to plot for {file_path}.")
-            return
-
-        base_name = os.path.basename(file_path)
-        plot_filename = os.path.splitext(base_name)[0] + "_issue_trend_plot.png"
-        output_plot_path = os.path.join(output_dir, plot_filename)
-
-        self._generate_plot(monthly_issues, output_plot_path)
-
-    def process_multiple_csvs(self, file_paths, output_dir="output_plots"):
-        """
-        Processes a list of CSV files.
-
-        Args:
-            file_paths (list): A list of paths to CSV files.
-            output_dir (str): Directory to save the generated plots.
-        """
-        for file_path in file_paths:
-            self.process_csv(file_path, output_dir)
 
 if __name__ == '__main__':
-    analyzer = IssueAnalyzer(chatgpt_release_date="2022-11-30")
-
     mine_results_folder = "mine_results"
     csv_files_to_process = glob.glob(os.path.join(mine_results_folder, "*.csv"))
 
-    if csv_files_to_process:
-        print(f"\nFound {len(csv_files_to_process)} CSV files to process: {csv_files_to_process}")
-        analyzer.process_multiple_csvs(csv_files_to_process, output_dir="generated_plots")
-    else:
-        print(f"No CSV files found in '{mine_results_folder}' matching the criteria for processing.")
-
-    print("\n🏁 Analysis complete. Check the 'generated_plots' directory for output graphs.")
+    for csv_path in csv_files_to_process:
+        analisador = AnalisadorDeIssues(csv_path)
+        print(os.path.join('generated_plots', analisador.define_boxplot_path(csv_path)))
+        print(analisador.define_boxplot_path(csv_path))
+        if analisador.df is not None:
+            analisador.analisar_e_visualizar(os.path.join('generated_plots', analisador.define_boxplot_path(csv_path)))

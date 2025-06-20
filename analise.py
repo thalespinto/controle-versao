@@ -1,158 +1,130 @@
-import pandas as pd
-import os
 import glob
 
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from scipy.stats import ttest_ind
+import os
 
-def main():
-    folder = "mine_results"
 
-    padrao_arquivos_data = os.path.join(folder, '*_issues_*.csv')
-    padrao_arquivos_simples = os.path.join(folder, '*_issues.csv')
+class AnalisadorDeIssues:
+    """
+    Uma classe para analisar a diferença no número de issues criadas
+    entre dois períodos de tempo e visualizar os resultados.
+    """
 
-    arquivos_ignorados_padroes = [
-        '*_contagem_anual.csv',
-        '*_analise_periodo.csv'  # Novo padrão para ignorar
-    ]
+    def __init__(self, caminho_csv: str):
+        """
+        Inicializa o analisador carregando os dados do arquivo CSV.
 
-    todos_arquivos_csv_issues = glob.glob(padrao_arquivos_data) + glob.glob(padrao_arquivos_simples)
+        Args:
+            caminho_csv (str): O caminho para o arquivo CSV com os dados das issues.
+        """
 
-    arquivos_csv_para_processar = []
-    for f_path in todos_arquivos_csv_issues:
-        ignorar = False
-        for padrao_ignorado in arquivos_ignorados_padroes:
-            if glob.fnmatch.fnmatch(os.path.basename(f_path), padrao_ignorado):
-                ignorar = True
-                break
-        if not ignorar:
-            arquivos_csv_para_processar.append(f_path)
-
-    if not arquivos_csv_para_processar:
-        print(
-            f"Nenhum arquivo CSV de issue para processar encontrado em '{folder}' (após ignorar arquivos de resultado).")
-        return
-
-    print("🔄 Processando arquivos de issues...")
-    for file_path in arquivos_csv_para_processar:
+        self.periodo_1 = ("2020-05-01", "2022-05-31")
+        self.periodo_2 = ("2023-06-01", "2025-06-30")
         try:
-            base_name_original_file = os.path.basename(file_path)
-            print(f"\n  -> Processando arquivo: {base_name_original_file}")
-            df_temp = pd.read_csv(file_path)
+            self.df = pd.read_csv(caminho_csv)
+            self.df['createdAt'] = pd.to_datetime(self.df['createdAt'])
+            print("Arquivo CSV carregado com sucesso!")
+        except FileNotFoundError:
+            print(f"Erro: O arquivo {caminho_csv} não foi encontrado.")
+            self.df = None
+        except KeyError:
+            print(
+                "Erro: A coluna 'createdAt' não foi encontrada no CSV. Por favor, verifique o nome da coluna no arquivo.")
+            self.df = None
 
-            date_column = None
-            if 'createdAt' in df_temp.columns:
-                date_column = 'createdAt'
-            elif 'created_at' in df_temp.columns:
-                date_column = 'created_at'
+    def _get_contagens_mensais(self, data_inicio: str, data_fim: str) -> pd.Series:
+        """
+        Filtra o DataFrame por um período e retorna a contagem mensal de issues.
+        """
+        mask = (self.df['createdAt'] >= data_inicio) & (self.df['createdAt'] <= data_fim)
+        df_periodo = self.df.loc[mask]
+        df_periodo = df_periodo.set_index('createdAt')
 
-            if date_column:
-                df_temp[date_column] = pd.to_datetime(df_temp[date_column], errors='coerce')
-                df_temp.dropna(subset=[date_column], inplace=True)
+        if df_periodo.empty:
+            return pd.Series([], dtype=int)
 
-                if df_temp.empty:
-                    print(f"    Aviso: Nenhuma data válida em '{base_name_original_file}' após conversão. Pulando.")
-                    continue
+        contagens_mensais = df_periodo.groupby(df_periodo.index.to_period('M')).size()
+        return contagens_mensais
 
-                if df_temp[date_column].dt.tz is not None:
-                    df_temp[date_column] = df_temp[date_column].dt.tz_convert(None)
+    def analisar_e_visualizar(self, nome_arquivo_saida):
+        """
+        Executa a análise completa, realiza o teste t e salva um boxplot.
+        """
+        with open(f"{nome_arquivo_saida}_logs.txt", 'w', encoding='utf-8') as f:
+            if self.df is None:
+                print("A análise não pode continuar porque o DataFrame não foi carregado.", file=f)
+                return
 
-                df_temp['ano'] = df_temp[date_column].dt.year
-                df_temp['ano'] = df_temp['ano'].astype(int)
+            contagens_p1 = self._get_contagens_mensais(self.periodo_1[0], self.periodo_1[1])
+            contagens_p2 = self._get_contagens_mensais(self.periodo_2[0], self.periodo_2[1])
 
-                # --- 1. Gerar CSV de contagem anual para este arquivo (como antes) ---
-                contagem_anual_arquivo = df_temp.groupby('ano').size().reset_index(name='numero_de_issues')
-                contagem_anual_arquivo = contagem_anual_arquivo.sort_values(by='ano')
+            print("\n--- Resumo das Contagens Mensais ---", file=f)
+            print(f"Período 1 ({self.periodo_1[0]} a {self.periodo_1[1]}):", file=f)
+            if not contagens_p1.empty:
+                print(contagens_p1.describe().to_string(), file=f)
+            else:
+                print("Nenhum dado encontrado para este período.", file=f)
 
-                name_sem_ext, _ = os.path.splitext(base_name_original_file)
-                output_csv_name_anual = f"{name_sem_ext}_contagem_anual.csv"
-                output_csv_path_anual = os.path.join(folder, output_csv_name_anual)
+            print(f"\nPeríodo 2 ({self.periodo_2[0]} a {self.periodo_2[1]}):", file=f)
+            if not contagens_p2.empty:
+                print(contagens_p2.describe().to_string(), file=f)
+            else:
+                print("Nenhum dado encontrado para este período.", file=f)
 
-                contagem_anual_arquivo.to_csv(output_csv_path_anual, index=False)
-                print(f"    ✅ CSV de contagem anual salvo: {output_csv_path_anual}")
+            if len(contagens_p1) < 2 or len(contagens_p2) < 2:
+                print("\n--- Teste de Significância Estatística ---", file=f)
+                print("Não é possível realizar o teste t: um ou ambos os períodos têm menos de duas amostras mensais.", file=f)
+            else:
+                t_stat, p_value = ttest_ind(contagens_p1, contagens_p2, equal_var=False)
+                print("\n--- Teste de Significância Estatística ---", file=f)
+                print(f"Estatística t: {t_stat:.4f}", file=f)
+                print(f"P-valor: {p_value:.4f}", file=f)
+                alpha = 0.05
+                if p_value < alpha:
+                    print(f"Conclusão: Existe uma diferença estatisticamente significativa.", file=f)
+                else:
+                    print(f"Conclusão: Não há evidências de uma diferença estatisticamente significativa.", file=f)
 
-                # --- 2. Análise por período para este arquivo ---
-                print(f"    🔍 Realizando análise por período para: {base_name_original_file}")
+        plt.figure(figsize=(12, 8))
+        sns.set_theme(style="whitegrid")
 
-                # Criar uma cópia para a análise de período para não afetar df_temp original para outras possíveis análises
-                df_analise_periodo = df_temp.copy()
+        df1 = pd.DataFrame({'contagem': contagens_p1, 'periodo': f'Período 1\n({self.periodo_1[0]} a {self.periodo_1[1]})'})
+        df2 = pd.DataFrame({'contagem': contagens_p2, 'periodo': f'Período 2\n({self.periodo_2[0]} a {self.periodo_2[1]})'})
 
-                # Aplicar filtros:
-                # 2a. Ignorar 2025 (e anos posteriores)
-                df_analise_periodo = df_analise_periodo[df_analise_periodo['ano'] < 2025]
+        df_plot = pd.concat([df1, df2])
 
-                if df_analise_periodo.empty:
-                    print(
-                        f"      Aviso: Nenhum dado para '{base_name_original_file}' após filtro 'ano < 2025'. Análise de período não gerada.")
-                    continue
+        if not df_plot.empty:
+            sns.boxplot(data=df_plot, x='periodo', y='contagem', palette="pastel", width=0.5)
 
-                # 2b. Ignorar o menor ano (após o filtro de 2025)
-                menor_ano = df_analise_periodo['ano'].min()
-                df_analise_periodo_filtrado = df_analise_periodo[df_analise_periodo['ano'] != menor_ano]
-                print(f"      Filtros para período: Ano < 2025, Menor ano ignorado: {menor_ano}")
+            plt.title('Comparação Mensal de Issues Criadas', fontsize=16)
+            plt.ylabel('Número de Issues por Mês', fontsize=12)
+            plt.xlabel('Períodos', fontsize=12)
+            plt.tight_layout()
 
-                if df_analise_periodo_filtrado.empty:
-                    print(
-                        f"      Aviso: Nenhum dado para '{base_name_original_file}' após remover o menor ano ({menor_ano}). Análise de período não gerada.")
-                    continue
+            try:
+                plt.savefig(f"{nome_arquivo_saida}_boxplot.png")
+                print(f"\nGráfico salvo com sucesso como '{nome_arquivo_saida}_boxplot.png'")
+            except Exception as e:
+                print(f"\nOcorreu um erro ao salvar o gráfico: {e}")
+        else:
+            print("\nNenhum dado para plotar.")
 
-                # 2c. Criar coluna 'periodo'
-                df_analise_periodo_filtrado['periodo'] = df_analise_periodo_filtrado['ano'].apply(
-                    lambda x: 'Antes_2023' if x < 2023 else 'Depois_2023'
-                )
-
-                # 2d. Calcular contagem total de issues por período
-                contagem_total_periodo = df_analise_periodo_filtrado.groupby('periodo').size().reset_index(
-                    name='total_issues_periodo')
-
-                # 2e. Calcular média anual de issues por período
-                # Primeiro, contar issues por ano dentro de cada período
-                issues_por_ano_periodo = df_analise_periodo_filtrado.groupby(['periodo', 'ano']).size().reset_index(
-                    name='issues_no_ano')
-                # Depois, calcular a média dessas contagens anuais para cada período
-                media_anual_periodo = issues_por_ano_periodo.groupby('periodo')['issues_no_ano'].mean().reset_index(
-                    name='media_anual_issues_periodo')
-
-                # Formatar a média para 2 casas decimais
-                media_anual_periodo['media_anual_issues_periodo'] = media_anual_periodo[
-                    'media_anual_issues_periodo'].round(2)
-
-                if contagem_total_periodo.empty and media_anual_periodo.empty:
-                    print(
-                        f"      Aviso: Nenhum dado de período para '{base_name_original_file}' após filtros. Análise de período não gerada.")
-                    continue
-
-                # Juntar os resultados (contagem total e média anual)
-                if not contagem_total_periodo.empty and not media_anual_periodo.empty:
-                    df_resultado_periodo = pd.merge(contagem_total_periodo, media_anual_periodo, on='periodo',
-                                                    how='outer')
-                elif not contagem_total_periodo.empty:
-                    df_resultado_periodo = contagem_total_periodo
-                    df_resultado_periodo['media_anual_issues_periodo'] = pd.NA  # ou 0, ou float('nan')
-                elif not media_anual_periodo.empty:  # Caso menos provável sem contagem total
-                    df_resultado_periodo = media_anual_periodo
-                    df_resultado_periodo['total_issues_periodo'] = pd.NA  # ou 0, ou float('nan')
-                else:  # Ambos vazios, embora já verificado acima
-                    print(
-                        f"      Aviso: Nenhum dado de período para '{base_name_original_file}' após filtros. Análise de período não gerada.")
-                    continue
-
-                output_csv_name_periodo = f"{name_sem_ext}_analise_periodo.csv"
-                output_csv_path_periodo = os.path.join(folder, output_csv_name_periodo)
-
-                df_resultado_periodo.to_csv(output_csv_path_periodo, index=False)
-                print(f"    ✅ CSV de análise por período salvo: {output_csv_path_periodo}")
-                print(f"      Conteúdo de {output_csv_name_periodo}:")
-                print(df_resultado_periodo.to_string())
+    def define_boxplot_path(self, name):
+        nome_do_arquivo = os.path.basename(name)
+        nome_base, extensao = os.path.splitext(nome_do_arquivo)
+        return nome_base
 
 
-            else:  # Se date_column não foi encontrada
-                print(
-                    f"    Aviso: Coluna de data (ex: 'createdAt', 'created_at') não encontrada em '{base_name_original_file}'. Pulando este arquivo.")
+if __name__ == '__main__':
+    mine_results_folder = "mine_results"
+    csv_files_to_process = glob.glob(os.path.join(mine_results_folder, "*.csv"))
 
-        except Exception as e:
-            print(f"    ❌ Erro ao processar o arquivo '{base_name_original_file}': {e}")
-
-    print("\n🏁 Processamento concluído.")
-
-
-if __name__ == "__main__":
-    main()
+    for csv_path in csv_files_to_process:
+        analisador = AnalisadorDeIssues(csv_path)
+        print(os.path.join('generated_plots', analisador.define_boxplot_path(csv_path)))
+        print(analisador.define_boxplot_path(csv_path))
+        if analisador.df is not None:
+            analisador.analisar_e_visualizar(os.path.join('generated_plots', analisador.define_boxplot_path(csv_path)))

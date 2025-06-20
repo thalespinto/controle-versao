@@ -51,7 +51,6 @@ if __name__ == "__main__":
         "react",
         "rn",
         "vscode",
-        "flutter",
         'bokeh',
         'clickhouse',
         'gradle',

@@ -91,17 +91,11 @@ class AnalisadorDeIssues:
         plt.figure(figsize=(12, 8))
         sns.set_theme(style="whitegrid")
 
-        # --- CORREÇÃO PRINCIPAL AQUI ---
-        # 1. Criar DataFrames individuais para cada período com um rótulo
         df1 = pd.DataFrame({'contagem': contagens_p1, 'periodo': f'Período 1\n({self.periodo_1[0]} a {self.periodo_1[1]})'})
         df2 = pd.DataFrame({'contagem': contagens_p2, 'periodo': f'Período 2\n({self.periodo_2[0]} a {self.periodo_2[1]})'})
 
-        # 2. Concatenar em um único DataFrame (formato "longo")
         df_plot = pd.concat([df1, df2])
 
-        # 3. Usar o DataFrame longo para plotar.
-        #    'x' define as categorias no eixo x.
-        #    'y' define os valores no eixo y.
         if not df_plot.empty:
             sns.boxplot(data=df_plot, x='periodo', y='contagem', palette="pastel", width=0.5)
 

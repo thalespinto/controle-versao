@@ -1,0 +1,26 @@
+
+--- Resumo das Contagens Mensais ---
+Período 1 (2020-05-01 a 2022-05-31):
+count    25.000000
+mean     24.400000
+std       8.529361
+min      12.000000
+25%      18.000000
+50%      25.000000
+75%      29.000000
+max      47.000000
+
+Período 2 (2023-06-01 a 2025-06-30):
+count    25.000000
+mean     14.640000
+std       5.529316
+min       1.000000
+25%      11.000000
+50%      15.000000
+75%      19.000000
+max      24.000000
+
+--- Teste de Significância Estatística ---
+Estatística t: 4.8009
+P-valor: 0.0000
+Conclusão: Existe uma diferença estatisticamente significativa.

@@ -1,24 +1,17 @@
 import pandas as pd
 def main():
-    # Substitua 'seu_arquivo.xlsx' pelo nome do seu arquivo Excel.
-    # Se o arquivo não estiver no mesmo diretório do script, forneça o caminho completo.
     file_path = "projets_with_1000_stars_or_more.xlsx"  # <<< COLOQUE O NOME CORRETO DO SEU ARQUIVO .XLSX AQUI
-    sheet_name = 0 # <<< NOME DA PLANILHA DENTRO DO ARQUIVO EXCEL. Ajuste se necessário (pode ser 0 para a primeira planilha).
+    sheet_name = 0
 
-    # Nomes das colunas esperados (ajuste se os nomes no seu arquivo Excel forem diferentes)
-    date_column = 'createdAt'           # Coluna com a data de criação
-    commits_column = 'commits'     # Coluna com o número de commits
-    contributors_column = 'contributors' # Coluna com o número de contribuidores
+    date_column = 'createdAt'
+    commits_column = 'commits'
+    contributors_column = 'contributors'
     issues_column = 'issues'
 
     try:
-        # Carregar o arquivo Excel para um DataFrame do Pandas
-        # Se o seu arquivo Excel tiver várias planilhas, você pode especificar qual carregar com o parâmetro sheet_name
-        # Por exemplo, sheet_name='Sheet1' ou sheet_name=0 (para a primeira planilha)
         df = pd.read_excel(file_path, sheet_name=sheet_name)
         print(f"Arquivo '{file_path}' (planilha '{sheet_name}') carregado com sucesso. Total de {len(df)} repositórios.")
 
-        # Verificar se as colunas esperadas existem
         required_columns = [date_column, commits_column, contributors_column]
         missing_columns = [col for col in required_columns if col not in df.columns]
         if missing_columns:
@@ -26,7 +19,6 @@ def main():
             print(f"Por favor, verifique os nomes das colunas no seu arquivo Excel e ajuste as variáveis 'date_column', 'commits_column' e 'contributors_column' no script.")
             print(f"Colunas encontradas na planilha: {list(df.columns)}")
         else:
-            # 1. Converter a coluna de data para o formato datetime
             try:
                 df[date_column] = pd.to_datetime(df[date_column], errors='coerce')
                 df.dropna(subset=[date_column], inplace=True) # Remover linhas onde a conversão de data falhou

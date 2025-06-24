@@ -28,7 +28,7 @@ def main():
                 df = None
 
             if df is not None and not df.empty:
-                # 2. Filtrar repositórios criados antes de novembro de 2020
+                # 2. Filtrar repositórios criados antes de maio de 2020
                 filter_date = pd.to_datetime('2020-05-01')
                 condition_date = pd.to_datetime(df[date_column], errors='coerce', dayfirst=True) < filter_date
 
